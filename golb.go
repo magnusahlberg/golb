@@ -87,7 +87,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	renderPage(page, w)
 }
 
+func clearCache() {
+	articles = nil
+}
+
 func main() {
+	ticker := time.NewTicker(time.Minute * 30)
+	go func() {
+		for _ = range ticker.C {
+			clearCache()
+		}
+	}()
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
 	http.HandleFunc("/", indexHandler)
 	http.ListenAndServe(":8181", nil)
