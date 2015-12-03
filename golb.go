@@ -102,4 +102,3 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.ListenAndServe(":8181", nil)
 }
-
