@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"strconv"
 	"time"
@@ -20,6 +21,12 @@ type Article struct {
 	html string
 }
 
+type ByDate []Article
+
+func (a ByDate) Len() int { return len(a ) }
+func (a ByDate) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByDate) Less(i, j int) bool { return a[i].date.After(a[j].date) }
+
 var (
 	articles []Article
 )
@@ -29,6 +36,7 @@ func fetchArticles() {
 	if walkErr != nil {
 		fmt.Printf("Walk error: %s", walkErr)
 	}
+	sort.Sort(ByDate(articles))
 }
 
 func visit(path string, info os.FileInfo, err error) error {
